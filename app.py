@@ -66,11 +66,12 @@ if uploaded_file is not None:
         writer.writerows(data)
 
         csv_data = output.getvalue()
-
+        original_filename = uploaded_file.name.rsplit(".", 1)[0]
+        output_filename = f"{original_filename}_sentence_counts.csv"
         st.download_button(
             label="Download Results as CSV",
             data=csv_data,
-            file_name="sentence_counts.csv",
+            file_name=output_filename,
             mime="text/csv",
         )
 
