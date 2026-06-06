@@ -28,9 +28,6 @@ if uploaded_file is not None:
     full_text = []
     for para in doc.paragraphs:
         clean_text = fix_encoding(para.text)
-        for run in para.runs:
-            if 'w:br' in run._element.xml and 'type="page"' in run._element.xml:
-                print("Manual Page Break")
         full_text.append(clean_text)
 
     text_content = " ".join(full_text)
