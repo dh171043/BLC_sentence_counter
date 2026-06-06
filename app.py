@@ -1,8 +1,18 @@
-import re
+import csv
 import io
+import re
+
 import docx
 import streamlit as st
-import csv
+
+
+def fix_encoding(text):
+    # fixes Latin-1 errors and returns UTF-8
+    try:
+        return text.encode("latin-1").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return text
+
 
 st.set_page_config(page_title="Sentence Counter", page_icon="📝")
 st.title("Essay Sentence Parser")
@@ -17,7 +27,8 @@ if uploaded_file is not None:
     doc = docx.Document(uploaded_file)
     full_text = []
     for para in doc.paragraphs:
-        full_text.append(para.text)
+        clean_text = fix_encoding(para.text)
+        full_text.append(clean_text)
 
     text_content = " ".join(full_text)
 
@@ -43,10 +54,10 @@ if uploaded_file is not None:
                     ),
                 }
             )
-        
-        #display as interactive table
+
+        # display as interactive table
         st.dataframe(data, use_container_width=True)
-        #downloadable csv
+        # downloadable csv
         output = io.StringIO()
         fieldnames = ["Sentence #", "Word Count", "Preview"]
 
@@ -57,10 +68,10 @@ if uploaded_file is not None:
         csv_data = output.getvalue()
 
         st.download_button(
-            label = "Download Results as CSV",
-            data = csv_data,
-            file_name = "sentence_counts.csv",
-            mime = "text/csv"
+            label="Download Results as CSV",
+            data=csv_data,
+            file_name="sentence_counts.csv",
+            mime="text/csv",
         )
 
     else:
